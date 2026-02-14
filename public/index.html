@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Water Tank Monitor</title>
+<style>
+body {
+  background: #111;
+  color: white;
+  text-align: center;
+  font-family: Arial;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin-top: 40px;
+}
+
+.tank {
+  width: 120px;
+  height: 300px;
+  border: 3px solid white;
+  position: relative;
+  overflow: hidden;
+}
+
+.water {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 0%;
+  background: blue;
+  transition: height 0.8s ease;
+}
+
+.motor {
+  margin-top: 40px;
+  font-size: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Water Tank Dashboard</h1>
+
+<div class="container">
+
+  <div>
+    <h3>Top Tank</h3>
+    <div class="tank">
+      <div id="topWater" class="water"></div>
+    </div>
+  </div>
+
+  <div>
+    <h3>Bottom Tank</h3>
+    <div class="tank">
+      <div id="bottomWater" class="water"></div>
+    </div>
+  </div>
+
+</div>
+
+<div id="motorStatus" class="motor">
+Motor: OFF
+</div>
+
+<script>
+async function updateData() {
+
+  const response = await fetch('/api/status');
+  const data = await response.json();
+
+  document.getElementById("topWater").style.height = data.top + "%";
+  document.getElementById("bottomWater").style.height = data.bottom + "%";
+
+  const motor = document.getElementById("motorStatus");
+
+  motor.innerText = "Motor: " + (data.motor ? "ON" : "OFF");
+  motor.style.color = data.motor ? "lime" : "red";
+}
+
+setInterval(updateData, 2000);
+updateData();
+</script>
+
+</body>
+</html>
