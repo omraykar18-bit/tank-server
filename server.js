@@ -12,18 +12,32 @@ let tankData = {
   timestamp: Date.now()
 };
 
-const API_KEY = "12345";
+const API_KEY = "12345678";
 
 app.post('/api/update', (req, res) => {
 
+  console.log("----- NEW REQUEST -----");
+  console.log("Incoming Headers:", req.headers);
+  console.log("Received Key:", req.headers['x-api-key']);
+  console.log("Expected Key:", API_KEY);
+  console.log("Body:", req.body);
+
+  if (!req.headers['x-api-key']) {
+    console.log("No API key header received");
+    return res.status(403).send("No API key header received");
+  }
+
   if (req.headers['x-api-key'] !== API_KEY) {
-    return res.status(403).send("Unauthorized");
+    console.log("Wrong API key");
+    return res.status(403).send("Wrong API key");
   }
 
   tankData = {
     ...req.body,
     timestamp: Date.now()
   };
+
+  console.log("Data Updated Successfully");
 
   res.send("OK");
 });
